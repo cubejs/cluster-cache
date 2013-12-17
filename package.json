@@ -1,0 +1,35 @@
+{
+  "name": "cluster-cache",
+  "version": "0.5.0-SNAPSHOT",
+  "description": "cluster-cache ===============",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "rm -rf ./cluster-cache-*",
+    "test": "mocha --ui bdd --timeout 10s --reporter spec  ./test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cubejs/cluster-cache.git"
+  },
+  "author": "huzhou@ebay.com",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/cubejs/cluster-cache/issues"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "when": "~2.7.0",
+    "graceful-fs": "~2.0.1",
+    "request": "~2.30.0"
+  },
+  "devDependencies": {
+    "optimist": "~0.6.0",
+    "mocha": "~1.15.1",
+    "should": "~2.1.1"
+  }
+}
