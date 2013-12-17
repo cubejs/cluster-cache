@@ -152,7 +152,7 @@ module.exports = {
 			}
 			else{
 				//it's master's job to fork another worker specificly as the cache manager
-				master.fork({
+				master.fork(master.options, {
 					'CACHE_MANAGER': true
 				});
 			}
