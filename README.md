@@ -6,7 +6,7 @@ cache service to share data across workers/master
 * **`cache`** 
 
 ```javascript
-var cache = require('cluster2/cache').use('cache-name', {
+var cache = require('cluster-cache').use('cache-name', {
   'persist': true,//default false
   'expire': 60000 //in ms, default 0, meaning no expiration
 });
@@ -53,9 +53,7 @@ Note that, we allow you to use caching w/o cluster2, if you want to enable cachi
 ```javascript
 
 //you can use this in unit test too as we did
-require('cluster2/cache').enable({
-	'enable': true
-});
+require('cluster-cache').enable();
 
 ```
 
@@ -76,8 +74,8 @@ cache.get('cache-key-1', //key must be string
   .then(function(value){
     //the value resolved is anything already cached or the value newly loaded
     //note, the loader will be called once and once only, if it failed, the promise of get will be rejected.
-  })
-  .otherwise(function(error){
+  },
+  function(error){
   
   });
 ```
@@ -94,8 +92,8 @@ cache.set('cache-key-1', //key must be string
   })
   .then(function(happens){
     //the happens resolved is a true/false value indicating if the value has been accepted by the cache manager
-  })
-  .otherwise(function(error){
+  },
+  function(error){
   
   });
 ```

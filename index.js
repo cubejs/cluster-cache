@@ -139,17 +139,28 @@ module.exports = {
 
 		emitter = emitter || require('cluster-emitter');
 
-		emitter.once('cache-enable', function(options){
+		emitter.once('CLUSTER-ENABLE-CACHE', function(options){
 
-			var mgr = require('./lib/cache-mgr'),
-				svr = mgr.createServer(mgr.app);
+			var master = options.master,
+				mode = options.mode || 'master';
 
-			svr.listen(mgr.port, mgr.afterServerStarted);
+			if(!master || mode === 'master'){
+				var mgr = require('./lib/cache-mgr'),
+					svr = mgr.createServer(mgr.app);
+
+				svr.listen(mgr.port, mgr.afterServerStarted);
+			}
+			else{
+				//it's master's job to fork another worker specificly as the cache manager
+				master.fork({
+					'CACHE_MANAGER': true
+				});
+			}
 		});
 
 		//if it's none cluster mode, above registered cache initialization will take effect
 		//otherwise, in cluster mode, master will be responsible instead
-		emitter.to(['master']).emit('cache-enable', options);
+		emitter.to(['master']).emit('CLUSTER-ENABLE-CACHE', options);
 	}),
 
 	'use': function(namespace, options){
