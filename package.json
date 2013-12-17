@@ -22,6 +22,7 @@
     "url": "https://github.com/cubejs/cluster-cache/issues"
   },
   "dependencies": {
+    "cluster-emitter": "git://github.com/cubejs/cluster-emitter",
     "underscore": "~1.5.2",
     "when": "~2.7.0",
     "graceful-fs": "~2.0.1",
