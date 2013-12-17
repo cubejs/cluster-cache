@@ -137,6 +137,7 @@ module.exports = {
 
 	'enable': _.once(function(options, emitter){
 
+		options = options || {};
 		emitter = emitter || require('cluster-emitter');
 
 		emitter.once('CLUSTER-ENABLE-CACHE', function(options){
