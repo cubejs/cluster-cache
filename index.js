@@ -137,7 +137,9 @@ module.exports = {
 
 	'enable': _.once(function(options, emitter){
 
+		options = options || {};
 		emitter = emitter || require('cluster-emitter');
+		emitter = require('./lib/utils').decorateEmitter(emitter);
 
 		emitter.once('CLUSTER-ENABLE-CACHE', function(options){
 
