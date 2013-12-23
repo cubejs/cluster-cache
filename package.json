@@ -26,7 +26,8 @@
     "graceful-fs": "~2.0.1",
     "underscore": "~1.5.2",
     "request": "~2.30.0",
-    "when": "~2.7.0"
+    "when": "~2.7.0",
+    "axon": "~1.0.0"
   },
   "devDependencies": {
     "optimist": "~0.6.0",
