@@ -135,27 +135,36 @@ module.exports = {
         return process.getLogger(__filename);
 	},
 
+    // this will return a promise, which will be resolved after getting two available ports
 	'enable': _.once(function(options, emitter){
 
 		options = options || {};
 		emitter = emitter || require('cluster-emitter');
 		emitter = require('./lib/utils').decorateEmitter(emitter);
+        //var tillCacheServerStarted = when.defer();
 
 		emitter.once('CLUSTER-ENABLE-CACHE', function(options){
-
 			var master = options.master,
 				mode = options.mode || 'master';
 
 			if(!master || mode === 'master'){
-				var mgr = require('./lib/cache-mgr'),
-					svr = mgr.createServer(mgr.app);
+                process.env.CACHE_BASE_PORT = master ? master.port + 10 : 9190;
+				var mgr = require('./lib/cache-mgr');
+                mgr.configApp(mgr.app).then(function (ports) {
+                    mgr.port = ports;
+				    var svr = mgr.createServer(mgr.app);
+                    process.cacheServer = svr;
 
-				svr.listen(mgr.port, mgr.afterServerStarted);
+				    svr.listen(ports, mgr.afterServerStarted);
+                }, function (error) {
+                    logger.error('[cache] start server error %j', error); 
+                });
 			}
 			else{
 				//it's master's job to fork another worker specificly as the cache manager
 				master.fork(master.options, {
-					'CACHE_MANAGER': true
+					'CACHE_MANAGER': true,
+                    'CACHE_BASE_PORT': master.port + 10
 				});
 			}
 		});
@@ -163,6 +172,7 @@ module.exports = {
 		//if it's none cluster mode, above registered cache initialization will take effect
 		//otherwise, in cluster mode, master will be responsible instead
 		emitter.to(['master']).emit('CLUSTER-ENABLE-CACHE', options);
+        //return tillCacheServerStarted.promise;
 	}),
 
 	'use': function(namespace, options){
@@ -180,10 +190,10 @@ module.exports = {
 
 		return new Cache(namespace, pipeline([
 			
-			function(domain){
+			function(ports){
 
-				logger.debug('[cache] using domain:%s', domain);
-				return _this.user.use(domain);
+				logger.debug('[cache] using ports: %j', ports);
+				return _this.user.use(ports);
 			}, 
 
 			function(usr){
@@ -206,7 +216,7 @@ module.exports = {
 					'meta': meta
 				};
 			}
-		], actualOptions.domain));//optional
+		], actualOptions.ports));//optional
 	},
 
 	'manager': require('./lib/cache-mgr'),
