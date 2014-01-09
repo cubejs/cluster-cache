@@ -1,0 +1,7 @@
+.travis.yml
+node_modules
+test
+log
+pids
+cluster-cache-*
+ports

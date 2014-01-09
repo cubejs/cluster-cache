@@ -121,7 +121,7 @@ Cache.prototype.destroy = function destroy(){
 	return pipeline([this.getUsrAndMeta, this.pipeDestroy]);
 };
 
-module.exports = {
+module.exports = process.clusterCache = process.clusterCache || {
 
 	get logger(){
 
